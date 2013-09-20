@@ -850,7 +850,7 @@ public class Messreihe implements IMessreihe, Serializable {
             if ( v2 != 0.0 ) q = v1/v2;
             mr.addValuePair(k, q);
         }
-        mr.setLabel( this.label + " / " + mr2.label );
+        mr.setLabel( this.getLabel() + " / " + mr2.getLabel() );
         return mr;
     };
     
@@ -1644,6 +1644,19 @@ public class Messreihe implements IMessreihe, Serializable {
         // System.out.println( "shuffeld ...");
         
     }
+    
+        /**
+     * Use Collections for shuffelfing the content of
+     * the yValues Vector.
+     */
+    public void shuffleYValues( int max ) {
+        
+        int i = 0;
+        while( i < max ) {
+            Collections.shuffle( this.yValues );
+            i++;
+        }
+    }
 
     public Messreihe cutOut(int begin, int ende) {
        Messreihe r = new Messreihe();
@@ -1938,7 +1951,87 @@ public class Messreihe implements IMessreihe, Serializable {
     
     }
 
-  
+      public Messreihe subtractFromX(double d) {
+        Messreihe mr = new Messreihe();
+        mr.setLabel( this.getLabel() );
+        mr.binning = this.binning;
+        mr.decimalFormat_STAT = this.decimalFormat_STAT;
+        mr.decimalFormat_X = this.decimalFormat_X;
+        mr.decimalFormat_Y = this.decimalFormat_Y;
+        mr.status = new StringBuffer();
+        mr.label_X = this.label_X;
+        mr.label_Y = this.label_Y;
+        int max = this.yValues.size();
+
+        for( int i = 0; i < max ; i++ ) {
+            double x = (Double)xValues.elementAt(i);
+            double y = (Double)yValues.elementAt(i);
+
+            mr.addValuePair( x - d , y );
+        }
+        return mr;    
+    
+    }
+      
+    public static Messreihe calcAVOfRows(Vector<Messreihe> grIWL, Vector<Messreihe> grCN, String l) {
+        Messreihe r = new Messreihe();
+        int z = 0;
+        
+        for( Messreihe mr : grIWL ) { 
+            r = r.add(mr);
+            z++;
+        }
+        
+        for( Messreihe mr : grCN ) { 
+            r = r.add(mr);
+            z++;
+        }
+        
+        r.divide_Y_by(z);
+        
+        System.err.println( "> nr of rows added: " + z );
+        r.setLabel( l );
+        return r;
+    }  
+      
+    public static Messreihe calcSumOfRows(Vector<Messreihe> grIWL, Vector<Messreihe> grCN, String l) {
+        Messreihe r = new Messreihe();
+        int z = 0;
+        
+        for( Messreihe mr : grIWL ) { 
+            r = r.add(mr);
+            z++;
+        }
+        
+        for( Messreihe mr : grCN ) { 
+            r = r.add(mr);
+            z++;
+        }
+        System.err.println( "> nr of rows added: " + z );
+        r.setLabel( l );
+        return r;
+    }
+
+    public Messreihe divideXBy(double d) {
+        Messreihe mr = new Messreihe();
+        mr.setLabel( this.getLabel() );
+        mr.binning = this.binning;
+        mr.decimalFormat_STAT = this.decimalFormat_STAT;
+        mr.decimalFormat_X = this.decimalFormat_X;
+        mr.decimalFormat_Y = this.decimalFormat_Y;
+        mr.status = new StringBuffer();
+        mr.label_X = this.label_X;
+        mr.label_Y = this.label_Y;
+        int max = this.yValues.size();
+
+        for( int i = 0; i < max ; i++ ) {
+            double x = (Double)xValues.elementAt(i);
+            double y = (Double)yValues.elementAt(i);
+
+            mr.addValuePair( x / d , y );
+        }
+        return mr;        
+    }
     
 
     

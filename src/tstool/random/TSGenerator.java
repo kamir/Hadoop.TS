@@ -1,5 +1,6 @@
 /*
- * This Generator creates Time series for tests of our packages.
+ * This Generator creates Time-Series for functional tests of the
+ * Hadoop.TS software packages.
  * 
  *   - Sin / Cos wave ...
  *      
@@ -117,6 +118,44 @@ Samplingfrequenz, oder eingesetzt n/k mal Samplingrate mal c.
             mr.addValuePair( t , a * Math.sin( 2.0 * Math.PI * f * t ) );
         }
         return mr;
+    }
+    public static MessreiheFFT getSinusWave(double f, double time, double samplingRate, double a, double p ) {
+        MessreiheFFT mr = new MessreiheFFT();
+        int steps = (int)(time * samplingRate);
+                
+        mr.setLabel("N="+ steps + " (SR="+ samplingRate +" Hz, f="+ f +" Hz)");
+        mr.setDecimalFomrmatX( "0.00000" );
+        mr.setDecimalFomrmatY( "0.00000" );
+        
+        double dt = 1.0 / samplingRate; // s
+        
+        for( int j = 0 ; j<steps; j++ ) {
+            double t = j * dt;  // sekunden
+            mr.addValuePair( t , a * Math.sin( 2.0 * ( Math.PI * f * t + p ) ) );
+        }
+        return mr;
+    }
+    
+    public static MessreiheFFT getSinusWave(double f, double time, double samplingRate, double a, double p, double noice ) {
+        MessreiheFFT mr = new MessreiheFFT();
+        int steps = (int)(time * samplingRate);
+                
+        mr.setLabel("N="+ steps + " (SR="+ samplingRate +" Hz, f="+ f +" Hz)");
+        mr.setDecimalFomrmatX( "0.00000" );
+        mr.setDecimalFomrmatY( "0.00000" );
+        
+        double dt = 1.0 / samplingRate; // s
+        
+        for( int j = 0 ; j<steps; j++ ) {
+            double t = j * dt;  // sekunden
+            
+            mr.addValuePair( t , (1.0 + ( Math.random() * noice) ) * a * Math.sin( 2.0 * ( Math.PI * f * t + p ) ) );
+        }
+        return mr;
+    }
+
+    static Messreihe getSinusWave(Messreihe mr, Messreihe mr0, Messreihe mr1, Messreihe mr2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

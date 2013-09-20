@@ -24,6 +24,58 @@ import stdlib.StdRandom;
 import stdlib.StdStats;
 
 public class MessreiheFFT extends Messreihe {
+    
+    public MessreiheFFT getPhaseRandomizedModifiedFFT_INV( ) { 
+
+        MessreiheFFT aThis = this;
+        
+        MessreiheFFT rFFT = new MessreiheFFT();
+        rFFT.setLabel( aThis.getLabel() + " (pr)");
+        
+        double[] data = aThis.getYData();
+        data = extendToPowerOf2(data);
+        FastFourierTransformer fft = new FastFourierTransformer();
+
+        Complex[] c = fft.transform(data);
+        Complex[] mod = new Complex[c.length];
+
+        double N = c.length;
+
+        double c0_R = c[0].getReal();
+        double c0_I = c[0].getImaginary();
+
+        double cf_R = c[(data.length - 1)].getReal();
+        double cf_I = c[(data.length - 1)].getImaginary();
+
+//        double fmin = 0;
+//        double fmax = 0.5D * samplingRate;
+//
+//        double df = fmax / ( N * 0.5 );
+        
+        
+        double f0 = c0_R;
+        double df = N / 6283.1853071795858D;
+        
+        for (int i = 1; i < c.length; i++) {
+            
+            double f = i * df;
+            
+            double faktor = Math.random();
+                    
+            mod[i] = c[i].multiply(faktor);
+        
+        }
+
+        mod[0] = new Complex(0.0D, 0.0D);
+
+        FastFourierTransformer fft2 = new FastFourierTransformer();
+        Complex[] modData = fft2.inversetransform(mod);
+
+        for (int i = 0; i < c.length; i++) {
+            rFFT.addValuePair(i, modData[i].getReal());
+        }
+        return rFFT;
+    }
 
 
 
@@ -969,6 +1021,7 @@ public class MessreiheFFT extends Messreihe {
         }
     }
 
+    public static boolean debug = false;
     private double[] extendToPowerOf2(double[] data) {
         int z = data.length;
         int i = 0;
@@ -980,7 +1033,7 @@ public class MessreiheFFT extends Messreihe {
         i++;
         int z_max = (int) Math.pow(2.0D, i * 1.0D);
 
-        System.out.println("l=" + i + " z_min=" + z_min + " z_max=" + z_max + " mit 0.0 aufgefüllt:" + (z_max - z));
+        if ( debug ) System.out.println("l=" + i + " z_min=" + z_min + " z_max=" + z_max + " mit 0.0 aufgefüllt:" + (z_max - z));
         double[] back = new double[z_max];
         for (int a = 0; a < z_max; a++) {
             if (a >= z) {
@@ -1008,14 +1061,14 @@ public class MessreiheFFT extends Messreihe {
         return rFFT;
     }
 
-    public MessreiheFFT getModifiedFFT_INV2(double beta) {
-        MessreiheFFT rFFT = new MessreiheFFT();
-        rFFT.setLabel("LT_CORR beta=" + beta + ": " + getLabel());
-
-        calc_modified_FFT2(this, rFFT, beta);
-
-        return rFFT;
-    }
+//    public MessreiheFFT getModifiedFFT_INV2(double beta) {
+//        MessreiheFFT rFFT = new MessreiheFFT();
+//        rFFT.setLabel("LT_CORR beta=" + beta + ": " + getLabel());
+//
+//        calc_modified_FFT2(this, rFFT, beta);
+//
+//        return rFFT;
+//    }
 
 
     /**

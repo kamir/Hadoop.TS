@@ -122,6 +122,14 @@ public class LocalWikipediaNetwork2 {
         }
         return group;
     }
+    
+    public String getGroup(String key) {
+        String group = inverted_coded_pages.get(key.toString());
+        if ( debug && group == null ) {
+            System.out.println( "lookup: " + key.toString() + " ... " + group );
+        }
+        return group;
+    }
 
     private Vector<String[]> getList(String code) {
         Vector<String[]> l = nodeListeHASHED.get(code);

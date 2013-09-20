@@ -51,6 +51,7 @@ import org.w3c.dom.Document;
 public class MultiChartDistComp extends javax.swing.JDialog {
 
     public static Color bgCOLOR = Color.lightGray;
+    public static boolean autoClose = true;
 
     public static void open2(Vector<Messreihe> rows, boolean b) {
        
@@ -88,14 +89,20 @@ public class MultiChartDistComp extends javax.swing.JDialog {
     static Shape[] s = new Shape[6];
     
     public static void setSymbols() {
-        s[0] = new Ellipse2D.Double(0,0,5,5);
-        s[1] = ShapeUtilities.createDownTriangle(5);
-        s[2] = ShapeUtilities.createUpTriangle(5);
-        s[2] = new Ellipse2D.Double(0,0,10,10);
-        s[4] = ShapeUtilities.createDownTriangle(10);
-        s[5] = ShapeUtilities.createUpTriangle(10);
+        s[0] = new Ellipse2D.Double(0,0,3,3);
+        s[1] = ShapeUtilities.createDownTriangle(3);
+        s[2] = ShapeUtilities.createUpTriangle(3);
+        s[3] = new Ellipse2D.Double(0,0,5,5);
+        s[4] = ShapeUtilities.createDownTriangle(5);
+        s[5] = ShapeUtilities.createUpTriangle(5);
     
     
+    }
+
+    private void hideAddOns() {
+        this.getContentPane().remove( this.jButton1 );
+        this.getContentPane().remove( this.statisticTextField );
+        
     }
     
     
@@ -162,44 +169,48 @@ public class MultiChartDistComp extends javax.swing.JDialog {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        chartPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        chartPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0, 0, 0));
         chartPanel.setLayout(new java.awt.BorderLayout());
         jPanel1.add(chartPanel, java.awt.BorderLayout.CENTER);
 
-        jPanel2.setLayout(new java.awt.BorderLayout());
+//        jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        statisticTextField.setColumns(20);
-        statisticTextField.setRows(5);
-        jScrollPane1.setViewportView(statisticTextField);
+        //jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        //statisticTextField.setColumns(20);
+        //statisticTextField.setRows(5);
+        //jScrollPane1.setViewportView(statisticTextField);
 
-        jPanel1.add(jPanel2, java.awt.BorderLayout.EAST);
+        // jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        jPanel3.setPreferredSize(new java.awt.Dimension(400, 47));
+        // jPanel1.add(jPanel2, java.awt.BorderLayout.EAST);
 
-        jButton1.setText("Close");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        
+        //jPanel3.setPreferredSize(new java.awt.Dimension(400, 47));
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        
+        
+//        //jButton1.setText("Close");
+//        jButton1.addActionListener(new java.awt.event.ActionListener() {
+//
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                jButton1ActionPerformed(evt);
+//            }
+//        });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup().addContainerGap(331, Short.MAX_VALUE).addComponent(jButton1).addContainerGap()));
-        jPanel3Layout.setVerticalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup().addContainerGap(13, Short.MAX_VALUE).addComponent(jButton1).addContainerGap()));
+//        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+//        jPanel3.setLayout(jPanel3Layout);
+//        jPanel3Layout.setHorizontalGroup(
+//                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup().addContainerGap(331, Short.MAX_VALUE).addComponent(jButton1).addContainerGap()));
+//        jPanel3Layout.setVerticalGroup(
+//                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup().addContainerGap(13, Short.MAX_VALUE).addComponent(jButton1).addContainerGap()));
 
-        jPanel1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
+        //jPanel1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        pack();
+        
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -360,7 +371,13 @@ public class MultiChartDistComp extends javax.swing.JDialog {
 
                 tab.writeToFile( f );
 
-                return dialog.getContentPane();
+                if( autoClose ) {
+                    dialog.setVisible(false);
+                }    
+                dialog.hideAddOns();
+                
+                Container c = dialog.getContentPane(); 
+                return c;
 
     }
 
@@ -494,7 +511,7 @@ public class MultiChartDistComp extends javax.swing.JDialog {
         }
     }
 
-    boolean autoscale = true;
+    boolean _autoscale = true;
     
     public static boolean setDefaultRange = false;
     public ChartPanel cp = null;
@@ -506,16 +523,17 @@ public class MultiChartDistComp extends javax.swing.JDialog {
         
             NumberAxis xAxis = (NumberAxis)chart.getXYPlot().getDomainAxis();
             NumberAxis yAxis = (NumberAxis)chart.getXYPlot().getRangeAxis();
-            
-            if( setDefaultRange ) {
-                xAxis.setRange(xRangDEFAULT_MIN, xRangDEFAULT_MAX);
-                yAxis.setRange(yRangDEFAULT_MIN, yRangDEFAULT_MAX);
+            xAxis.setAutoRange( true );
+            yAxis.setAutoRange( true );
                 
-            }   
-            else {
-                xAxis.setAutoRange(autoscale);
-                yAxis.setAutoRange(autoscale);
-            }
+//            if( setDefaultRange ) {
+//                xAxis.setRange(xRangDEFAULT_MIN, xRangDEFAULT_MAX);
+//                yAxis.setRange(yRangDEFAULT_MIN, yRangDEFAULT_MAX);
+//                
+//            }   
+//            else {
+//                
+//            }
             
             RefineryUtilities.centerFrameOnScreen(this);
             
@@ -534,6 +552,7 @@ public class MultiChartDistComp extends javax.swing.JDialog {
 
         XYPlot plot = chart2.getXYPlot();
         plot.setBackgroundPaint( bgCOLOR );
+   
 
         if ( dcSet == null ) {
 
@@ -576,8 +595,11 @@ public class MultiChartDistComp extends javax.swing.JDialog {
         if ( useMyStroke ) initStrokes( renderer );
 
         ChartPanel chartPanel = new ChartPanel(chart2);
-        chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+        chartPanel.setPreferredSize(new java.awt.Dimension(320, 540));
         chart = chart2;
+        
+        chart.setTitle( new org.jfree.chart.title.TextTitle(chartTitle, new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 9) ) );
+
         return chartPanel;
     }
     
@@ -591,7 +613,7 @@ public class MultiChartDistComp extends javax.swing.JDialog {
             setSymbols();
         
             BasicStroke s0 = new BasicStroke( 0.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0.0f);
-            BasicStroke s1 = new BasicStroke( 0.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {2.0f, 4.0f}, 0.0f );
+            BasicStroke s1 = new BasicStroke( 0.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 2.0f, new float[] {2.0f, 4.0f}, 0.0f );
             strokes[0] = s1;
             strokes[1] = s0;
  
