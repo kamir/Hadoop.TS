@@ -62,9 +62,30 @@ public class MultiChartDistComp extends javax.swing.JDialog {
         dcSet = colors;
     }
 
-    
-    
     public static void setTypes(int[] _dt) {
+         useMyStroke = true;
+         
+         dt = _dt;
+
+         sv = new boolean[6];
+         lv = new boolean[6];
+                  
+         int x = 0;
+         for( int i : _dt ) { 
+             if ( i == 1) { 
+                 sv[x] = true;
+                 lv[x] = true;
+             }
+             else {
+                 sv[x] = false;
+                 lv[x] = false;
+             }
+
+             x++;
+         }
+    }
+    
+    public static void setTypes2(int[] _dt) {
          useMyStroke = true;
          dt = _dt;
          sv = new boolean[6];
@@ -89,14 +110,12 @@ public class MultiChartDistComp extends javax.swing.JDialog {
     static Shape[] s = new Shape[6];
     
     public static void setSymbols() {
-        s[0] = new Ellipse2D.Double(0,0,3,3);
-        s[1] = ShapeUtilities.createDownTriangle(3);
-        s[2] = ShapeUtilities.createUpTriangle(3);
-        s[3] = new Ellipse2D.Double(0,0,5,5);
-        s[4] = ShapeUtilities.createDownTriangle(5);
-        s[5] = ShapeUtilities.createUpTriangle(5);
-    
-    
+        s[0] = new Ellipse2D.Double(0,0,4,4);
+        s[1] = ShapeUtilities.createDownTriangle(4);
+        s[2] = ShapeUtilities.createUpTriangle(4);
+        s[3] = new Ellipse2D.Double(0,0,1,1);
+        s[4] = ShapeUtilities.createDownTriangle(1);
+        s[5] = ShapeUtilities.createUpTriangle(1);
     }
 
     private void hideAddOns() {
@@ -277,7 +296,9 @@ public class MultiChartDistComp extends javax.swing.JDialog {
                 dialog.chartTitle = string;
                 dialog.xLabel = x;
                 dialog.yLabel = y;
-                dialog.useLegende = b;
+                
+                dialog.useLegende = false;
+                
                 dialog.statisticTextField.setText(comment);
                 dialog.initChart();
                 dialog.setTitle(string);
@@ -365,6 +386,7 @@ public class MultiChartDistComp extends javax.swing.JDialog {
 
                 MesswertTabelle tab = new MesswertTabelle();
                 tab.fill_UP_VALUE = 0.0;
+                tab.singleX = false;
 
                 File f = new File( folder + "FS_" + filename + ".dat" );
                 tab.setMessReihen( mrs );

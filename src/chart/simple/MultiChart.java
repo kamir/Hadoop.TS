@@ -298,7 +298,7 @@ public class MultiChart extends javax.swing.JDialog {
                 dialog.initChart();
                 dialog.setTitle(string);
                 
-                //dialog.setVisible(true);
+                dialog.setVisible(true);
                 File f2 = new File( folder);
 
                 dialog.store( dialog.chart, f2, filename);
