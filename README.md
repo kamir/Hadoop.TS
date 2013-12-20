@@ -1,16 +1,16 @@
 Hadoop.TS 
 =========
 
-... is a collection of tools, which implement algorithms for time series statistics. 
-With this components one can build scalable time-series processing frameworks on top
-of Apache Hadoop and Apache HBase.
+The project provides a collection of tools, which implement algorithms for time series statistics. 
+With this components one can build scalable time-series processing applications on top
+of Apache Hadoop where data is stored in HDFS or in Apache HBase.
 
-It contains a set of simple generic classes to represent and transform complex data structures, 
-stored in HDFS or HBase.
+It contains a set of simple generic classes to represent and transform complex data structures, organized 
+in Buckets or as individual events like in OpenTSDB.
 
-The core components are: TimeSeries, TSBuckets and TSProcessors. Multiple submodules contain implementations
+The core components are: TimeSeries, TSBuckets and TSProcessors. Several submodules contain implementations
 of specific algorithms for univariate or bivariate time series analysis, especially for applications in
-complex systems research. 
+complex systems research.
 
 A major aspect of Hadoop.TS is to enable rapid prototyping for new algorithms based on existing
 preprocessed data, which is collected and stored in Hadoop clusters. Deployment and development 
