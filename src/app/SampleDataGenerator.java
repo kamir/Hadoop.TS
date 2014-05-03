@@ -6,10 +6,12 @@ package app;
 import hadoopts.buckets.generator.TSBucketCreator_FFMLRC;
 import hadoopts.buckets.generator.TSBucketCreator_Sinus;
 import hadoopts.buckets.generator.TSBucketCreator_Uncorrelated;
+
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import statphys.ris.experimental.TSPropertyTester;
 
 /**
@@ -25,6 +27,8 @@ public class SampleDataGenerator {
      */
     public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException {
 
+        System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
+        
         TSPropertyTester tester = new TSPropertyTester();
 
         String folder = "sample/";
@@ -35,14 +39,12 @@ public class SampleDataGenerator {
         try {
 
             /**
-             * LRC time sries - simple Fourier Filter Method
-         *
+             * LRC time sries - simple Fourier Filter Method             *
              */
             TSBucketCreator_FFMLRC.main(a);
 
             /**
-             * Uncorrelated time series
-         *
+             * Uncorrelated time series             *
              */
             a[1] = TSBucketCreator_Uncorrelated.mode_GAUSSIAN + "";
 //            Properties props = new Properties();
@@ -52,7 +54,7 @@ public class SampleDataGenerator {
             TSBucketCreator_Uncorrelated.main(a);
 
             /**
-             * Some sinus waves ...
+             * Sine waves ...
              *
              */
             TSBucketCreator_Sinus.main(a);

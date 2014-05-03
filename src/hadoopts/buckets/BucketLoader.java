@@ -45,7 +45,8 @@ public class BucketLoader {
         TSBucket bucket = TSBucket.createEmptyBucketFull();
         bucket.inMEM = default_INMEM;
         
-        bucket.loadFromLocalFS( fn, null );
+        								 // no ID-vector, no TSOperation
+        bucket.loadFromSequenceFile( fn, null, null );
         b = bucket;
     }  
     
@@ -61,7 +62,7 @@ public class BucketLoader {
         TSBucket bucket = TSBucket.createEmptyBucketFull();
         bucket.inMEM = default_INMEM;
         
-        bucket.loadFromLocalFS( fn, ids );
+        bucket.loadFromSequenceFile( fn, ids, null );
         b = bucket;
         return b;
     }  
@@ -81,7 +82,9 @@ public class BucketLoader {
         TSBucket bucket = TSBucket.createEmptyBucketFull();
         
         bucket.isProcessed = true;
-        bucket.isProcessedBy = tst.getClass();
+        
+        // WE SKIP THE HISTORY HERE
+        // bucket.isProcessedBy = tst.getClass();
 
         bucket.loadAndProcess( fn, tst, ids );
         

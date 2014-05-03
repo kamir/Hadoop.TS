@@ -16,36 +16,53 @@ package hadoopts.buckets.generator;
 import data.series.Messreihe;
 import hadoopts.topics.wikipedia.AccessFileFilter;
 import hadoopts.core.TSBucket;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.tools.GetConf;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
 /**
  *
- * @author sebastian
+ * @author Mirko
  */
-public class TSBucketCreator_FFMLRC {
-
-    /**
+public class TSBucketCreator_FFMLRC extends Configured implements Tool {
+ 
+	/**
      * @param args the command line arguments
+     * @throws Exception 
      */
-    public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws Exception {    	
+    	
+    	int res = ToolRunner.run( new Configuration(), new TSBucketCreator_FFMLRC(), args);
+        System.exit(res);
+    }
+
+	@Override
+	public int run(String[] args) throws Exception {
+
+        int stat = 0;
         
-        stdlib.StdRandom.initRandomGen(1);
+    	System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
+                
+        String baseOut = "tstest/";
+        String s = "abucket.ts.seq";
 
-        String baseOut = "./tstest/";
-
-        if ( args!= null ) { 
+		if ( args!= null ) { 
             if ( args.length > 0 ) baseOut = baseOut + args[0];
             File f = new File( baseOut );
             if ( !f.exists() ) { 
@@ -53,17 +70,21 @@ public class TSBucketCreator_FFMLRC {
             }
         }
         
-        System.out.println( ">>> FFMLRCBucketCreator (" + new Date( System.currentTimeMillis() ) +")" );
-        System.out.println( ">   OUT : " + baseOut );
-        
-        String s = "abucket.ts.seq";
- 
+	    // Conf object will read the HDFS configuration parameters from these
+        // XML files.
+        Configuration conf = getConf();
+        conf.addResource(new Path("/etc/hadoop/conf/core-site.xml"));
+		
+        System.out.println( ">>> FFMLRCBucketCreator : " + new Date( System.currentTimeMillis() ) );
+        stdlib.StdRandom.initRandomGen(1);
+        System.out.println( ">   fs.default.name     : " + getConf().get( "fs.default.name" ) );
+        System.out.println( ">   baseOut             : " + baseOut );
+             
         // We do no load data, but we use a GENERATOR here ...
-
         int Z = 15;
         double STRETCH = 4;
 
-        int LOOPS = 100;
+        int LOOPS = 10;
         
         int EXP = 16;
 
@@ -75,7 +96,7 @@ public class TSBucketCreator_FFMLRC {
         
             int z = LOOPS;
 
-            TSBucket tsb = new TSBucket();
+            TSBucket tsb = new TSBucket( getConf() );
             
             try {
                 tsb.createBucketWithRandomTS( baseOut + s, z, EXP, beta );
@@ -85,8 +106,10 @@ public class TSBucketCreator_FFMLRC {
             }
             
         }        
+        
+        return stat;
 
-    }
+	}
 
 }
 

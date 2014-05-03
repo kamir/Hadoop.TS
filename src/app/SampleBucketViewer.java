@@ -6,6 +6,7 @@
 package app;
 
 import java.io.IOException;
+
 import app.experimental.SimpleBucketTool;
 
 /**
@@ -14,11 +15,14 @@ import app.experimental.SimpleBucketTool;
  */
 public class SampleBucketViewer {
 
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
     
+    	System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
+    	   
         SimpleBucketTool.LIMIT = 25;
         
         String folder = "sample/";
@@ -35,6 +39,8 @@ public class SampleBucketViewer {
         
 //        a[1] = "LRC_beta_2.9";
 //        SimpleBucketTool.main( a );
+        
+        System.out.println("Done");
                             
     }
 }

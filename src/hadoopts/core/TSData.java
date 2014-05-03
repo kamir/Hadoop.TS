@@ -1,6 +1,7 @@
 package hadoopts.core;
 
 import data.series.Messreihe;
+
 import java.io.BufferedReader;
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.hadoop.io.Writable;
 
 /**
