@@ -2032,6 +2032,19 @@ public class Messreihe implements IMessreihe, Serializable {
         }
         return mr;        
     }
+
+    public void addProperty(String k, int length) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Hashtable<String,String> props = new Hashtable<String,String>();
+            
+    public void addProperty(String k, String v) {
+        
+        props.put( k , v );
+        
+    }
+ 
     
 
     

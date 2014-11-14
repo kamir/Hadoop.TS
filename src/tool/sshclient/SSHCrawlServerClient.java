@@ -175,7 +175,8 @@ public class SSHCrawlServerClient extends AbstractFactoryManager {
                 channel = session.createChannel(ClientChannel.CHANNEL_SHELL);
                 channel.setIn(new NoCloseInputStream(System.in));
             } else {
-                System.out.println( ">GHO...");
+                System.out.println( "> CMD: " );
+                System.out.println( "* " + command );
                 channel = session.createChannel(ClientChannel.CHANNEL_EXEC);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 Writer w = new OutputStreamWriter(baos);
@@ -183,12 +184,14 @@ public class SSHCrawlServerClient extends AbstractFactoryManager {
                     w.append(cmd).append(" ");
                 }
                 w.append("\n");
+                w.flush();
                 w.close();
                 channel.setIn(new ByteArrayInputStream(baos.toByteArray()));
             }
             channel.setOut(new NoCloseOutputStream(System.out));
             channel.setErr(new NoCloseOutputStream(System.err));
             channel.open().await();
+            
             channel.waitFor(ClientChannel.CLOSED, 0);
             session.close(false);
         } finally {
@@ -199,6 +202,9 @@ public class SSHCrawlServerClient extends AbstractFactoryManager {
     
     void sendCommend(String text) throws Exception {
         System.out.println( "> " + text );
+        
+        
+      
         
         List<String> command = new ArrayList<String>();
         StringTokenizer st = new StringTokenizer(text);

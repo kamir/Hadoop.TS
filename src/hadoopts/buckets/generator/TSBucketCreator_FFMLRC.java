@@ -47,8 +47,10 @@ public class TSBucketCreator_FFMLRC extends Configured implements Tool {
      * @throws Exception 
      */
     public static void main(String[] args) throws Exception {    	
-    	
+    	System.out.println( args );
+        
     	int res = ToolRunner.run( new Configuration(), new TSBucketCreator_FFMLRC(), args);
+        
         System.exit(res);
     }
 

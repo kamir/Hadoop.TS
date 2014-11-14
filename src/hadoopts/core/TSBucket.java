@@ -314,7 +314,7 @@ public class TSBucket {
 
     	FileSystem fs = null;
     	try  {
-    		fs = FileSystem.get( initConfig() );
+    		fs = FileSystem.get( new Configuration() );
     		System.out.println( fs );
     	}
     	catch (Exception ex) {

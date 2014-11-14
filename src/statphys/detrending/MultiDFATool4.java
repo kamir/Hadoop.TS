@@ -3,6 +3,7 @@ package statphys.detrending;
 import chart.simple.MultiBarChart;
 import chart.simple.MultiChart;
 import data.series.Messreihe;
+import java.io.BufferedWriter;
 import java.util.Vector;
 import java.io.File;
 import statphys.detrending.methods.DFA;
@@ -24,9 +25,12 @@ import statphys.detrending.methods.IDetrendingMethod;
  * @author kamir
  */
 public class MultiDFATool4 {
+    
+    public BufferedWriter bw = null;
 
     public static boolean logLogResults = false;
     public static boolean debug;
+    public String label;
 
     public MultiDFATool4() {
         resetPuffer();
@@ -250,7 +254,7 @@ public class MultiDFATool4 {
 
         for (int z = 0; z < vmr.size(); z++) {
 
-            System.out.println(  (z*1.0) / vmr.size() );
+            System.out.println( "### >>> " + ((z*1.0) / vmr.size())*100.0 + " %");
             
             double[][] dfa_results = null;
 
@@ -294,9 +298,20 @@ public class MultiDFATool4 {
 
                 Messreihe res_mr = dfa.getResultsMRLogLog();
                 
-                hzd1.addData( res_mr.linFit(fit_min[0], fit_max[0]).getSlope() );
-                hzd2.addData( res_mr.linFit(fit_min[1], fit_max[1]).getSlope() );
-                hzd3.addData( res_mr.linFit(fit_min[2], fit_max[2]).getSlope() );
+                double s1 =  res_mr.linFit(fit_min[0], fit_max[0]).getSlope();
+                double s2 =  res_mr.linFit(fit_min[1], fit_max[1]).getSlope();
+                double s3 =  res_mr.linFit(fit_min[2], fit_max[2]).getSlope();
+                
+                hzd1.addData( s1 );
+                hzd2.addData( s2 );
+                hzd3.addData( s3 );
+                
+                String line = z + "\t" + mr.props.get("k") + "\t" + s1 + "\t" + s2 + "\t" + s3 + "\n"; 
+
+                line = line.replace('.', ',');
+                
+                if (bw != null)
+                    bw.write(line);
                 
             }
             else {
@@ -309,11 +324,27 @@ public class MultiDFATool4 {
         hzd3.calcWS();
         
         Vector<Messreihe> m = new Vector<Messreihe>();
-        m.add( hzd1.getHistogram() );
-        m.add( hzd2.getHistogram() );
-        m.add( hzd3.getHistogram() );
         
-        MultiChart.open(m, "alpha (order=" + order +")", "alpha", "#" , true);
+        Messreihe mr1 = hzd1.getHistogram();
+        Messreihe mr2 = hzd2.getHistogram();
+        Messreihe mr3 = hzd3.getHistogram();
+
+        mr1.normalize();
+        mr2.normalize();
+        mr3.normalize();
+
+        m.add( mr1 );
+        m.add( mr2 );
+        m.add( mr3 );
+        
+        MultiChart.xRangDEFAULT_MIN = 0.0;
+        MultiChart.xRangDEFAULT_MAX = 1.0;
+        MultiChart.yRangDEFAULT_MIN = 0.0;
+        MultiChart.yRangDEFAULT_MAX = 1.0;
+        
+        MultiChart.setDefaultRange = true;
+        
+        MultiChart.open(m, label + "  (O:" + order +")", "alpha", "#" , true);
         
         // zur Illustration ...         
         // MultiChart.open(dfa.getMRFit(), "fit", "s", "F(s)", false, "?");
@@ -373,7 +404,7 @@ public class MultiDFATool4 {
         if (showCharts) {
 //            MultiChart.open(Fs, "[Phase " + phase + "] F(s) [DFA-order:" + order + "] {" + value + "}", label[0], label[1], true, "?");
 //            MultiChart.open(fsF2, "Anzahl Segmente je s [order:" + order + "] (all rows)", "s", "z", true, "?");
-            MultiChart.open(fsFMW, "<F(s)> order="+order, label[0], label[1], true, "*");
+//            MultiChart.open(fsFMW, "<F(s)> order="+order, label[0], label[1], false, "*");
 
         }
         else {   // Fs, "[Phase " + phase + "] F(s) [DFA-order:" + order + "] {" + value + "}", "log(s)", "log(F(s))", false, "?");

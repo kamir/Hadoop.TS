@@ -78,7 +78,7 @@ public class BucketCreator2 {
 //            System.out.println("\tz="+liste.length  );
   
             TSBucket tsb = new TSBucket();
-            tsb.setFolder( baseIn, baseOut  );
+//            tsb.setFolder( baseIn, baseOut  );
 
             int limit = Integer.MAX_VALUE;
             
