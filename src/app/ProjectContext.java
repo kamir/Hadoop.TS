@@ -8,17 +8,17 @@ import java.io.File;
  */
 public class ProjectContext {
 
-    public static String basePathIN = "/home/kamir/ANALYSIS/"; 
-    public static String basePathOUT = "/home/kamir/ANALYSIS/"; 
+    public static String basePathIN = "/Volumes/MyExternalDrive/CALCULATIONS/"; 
+    public static String basePathOUT = "/Volumes/MyExternalDrive/CALCULATIONS/"; 
     
-    public static String basePathOUT_dashboard = "/home/kamir/ANALYSIS/"; 
-    public static String basePathOUT_rawTS = "/home/kamir/ANALYSIS/"; 
-    public static String basePathOUT_corpus = "/home/kamir/ANALYSIS/"; 
-    public static String basePathOUT_listfile = "/home/kamir/ANALYSIS/"; 
-    public static String basePathOUT_cclog = "/home/kamir/ANALYSIS/"; 
-    public static String basePathOUT_eslog = "/home/kamir/ANALYSIS/"; 
+    public static String basePathOUT_dashboard = "/Volumes/MyExternalDrive/CALCULATIONS/"; 
+    public static String basePathOUT_rawTS = "/Volumes/MyExternalDrive/CALCULATIONS/"; 
+    public static String basePathOUT_corpus = "/Volumes/MyExternalDrive/CALCULATIONS/"; 
+    public static String basePathOUT_listfile = "/Volumes/MyExternalDrive/CALCULATIONS/"; 
+    public static String basePathOUT_cclog = "/Volumes/MyExternalDrive/CALCULATIONS/"; 
+    public static String basePathOUT_eslog = "/Volumes/MyExternalDrive/CALCULATIONS/"; 
     
-    public static String basePathOUT_networks = "/home/kamir/ANALYSIS/"; 
+    public static String basePathOUT_networks = "/Volumes/MyExternalDrive/CALCULATIONS/"; 
     public static String basePathOUT_LRI = "LRI/"; 
     
     
