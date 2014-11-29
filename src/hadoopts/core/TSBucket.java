@@ -1,22 +1,19 @@
 /**
- * A set of time series is grouped for efficient bulk processing
- * in TSBucket.
- * 
+ * A set of time series is grouped for efficient bulk processing in TSBucket.
+ *
  * The default implementation works with a SequenceFile. An alternative
  * representation of the TSBucket are AVRO and PARQUET files.
- * 
- * The data is stored as a (k,v) pair from:
- *   
- *    key:     Text
- *    value:   VectorWritable;
  *
- *   EXAMPLE:
- *   
- *     NamedVector nv = new NamedVector(new DenseVector(data.getData()), data.label);
- *     VectorWritable vec = new VectorWritable();
- *     vec.set(nv);
- *     writer.append(new Text(nv.getName()), vec);
- *   
+ * The data is stored as a (k,v) pair from:
+ *
+ * key: Text value: VectorWritable;
+ *
+ * EXAMPLE:
+ *
+ * NamedVector nv = new NamedVector(new DenseVector(data.getData()),
+ * data.label); VectorWritable vec = new VectorWritable(); vec.set(nv);
+ * writer.append(new Text(nv.getName()), vec);
+ *
  */
 package hadoopts.core;
 
@@ -56,23 +53,23 @@ public class TSBucket {
     public int LIMIT = Integer.MAX_VALUE;
 
     public boolean isProcessed = false;
-    
+
     int[] ids = null;
     java.util.Vector<Messreihe> bucketData = new java.util.Vector<Messreihe>();
     // record mode is a domain specific feature from WIKIPEDIA analysis.
-    static String recoderIdMode = "counter"; 
+    static String recoderIdMode = "counter";
 
     public String sourcFolder = "/media/esata/wiki/extract/svwiki/";
-        
+
     FileWriter fw = null;
     FileWriter fwe = null;
     public static String FN_EXT = "A";
-    
+
     static int counter = 0;
-  
+
     /**
      * Create an empty TSBucket and set LIMIT to Integer.MAX_VALUE.
-     * 
+     *
      * @return a bucket
      */
     public static TSBucket createEmptyBucketFull() {
@@ -83,7 +80,7 @@ public class TSBucket {
 
     /**
      * Create an empty TSBucket and set LIMIT to Integer.MAX_VALUE.
-     * 
+     *
      * @return a bucket
      */
     public static TSBucket createEmptyBucket() {
@@ -100,15 +97,15 @@ public class TSBucket {
     private static void setRecordMode(String c) {
         recoderIdMode = c;
         resetCounter();
-     }
+    }
 
     /**
      * Where should the time series be loaded from?
-     * 
-     * Within the source folder, there is a "group folder",
-     * from which data can be loaded.
-     * 
-     * @param in 
+     *
+     * Within the source folder, there is a "group folder", from which data can
+     * be loaded.
+     *
+     * @param in
      */
     public void setSourceDataFolder(String in) {
         sourcFolder = in;
@@ -117,31 +114,31 @@ public class TSBucket {
     }
 
     public TSBucket(String in, String out, String s) {
-    	setSourceDataFolder( in );
+        setSourceDataFolder(in);
     }
 
     public TSBucket() {
+        initConfig();
     }
 
     public TSBucket(Configuration conf) {
- 		setConfig(conf);
-	}
-    
+        setConfig(conf);
+    }
+
     /**
      * Processing results are stored in CSV files.
-     * 
-     * This processing mode is just for testing. 
-     * Large scale processing is done via Crunch.TS
-     * and scalable pipelines.
-     * 
+     *
+     * This processing mode is just for testing. Large scale processing is done
+     * via Crunch.TS and scalable pipelines.
+     *
      * @param fn
      * @param t
      * @param ids
      * @throws IOException
      */
     public void loadAndProcess(String fn, TSOperation t, java.util.Vector<Integer> ids) throws IOException {
-        
-    	File f = new File(fn + ".proc." + FN_EXT + ".csv");
+
+        File f = new File(fn + ".proc." + FN_EXT + ".csv");
         File fe = new File(fn + ".proc.explode." + FN_EXT + ".csv");
 
         fw = new FileWriter(f);
@@ -155,7 +152,7 @@ public class TSBucket {
         System.out.println(f.getAbsolutePath() + " created ... ");
     }
 
-	/**
+    /**
      * Im sourceFolder wird eine komplette Gruppe gewählt und in einen TS Bucket
      * überführt.
      *
@@ -163,7 +160,7 @@ public class TSBucket {
      *
      * @param groupFolder
      * @param limit
-     * 
+     *
      */
     public void createBucketFromLocalFilesInDirectory(String groupFolder, int limit) throws IOException {
 
@@ -171,7 +168,7 @@ public class TSBucket {
         String s = groupFolder;
 
         File f = new File(sourcFolder + s);
-        
+
         System.out.println("--> load data from ($source/$group) : " + f.getAbsolutePath());
 
         Configuration config = initConfig();
@@ -206,26 +203,27 @@ public class TSBucket {
         writer.close();
     }
 
-    
     /**
-     * Reload a TSBucket from a Sequence-File and do an implicit processing, 
-     * if the TSOperation object is not null. 
+     * Reload a TSBucket from a Sequence-File and do an implicit processing, if
+     * the TSOperation object is not null.
      *
      * @param fn
      * @param ids
-     * 
+     *
      * @throws IOException
      */
     public void loadFromSequenceFile(String fn, java.util.Vector<Integer> ids, TSOperation tst) throws IOException {
 
-    	if ( tst != null ) isProcessed = true;
-    	
+        if (tst != null) {
+            isProcessed = true;
+        }
+
         FileSystem fs = initFileSystem();
         Configuration config = initConfig();
 
         Path path = new Path(fn);
 
-        // write a SequenceFile form a Vector
+        // read NamedVectors from a SequenceFile 
         SequenceFile.Reader reader = new SequenceFile.Reader(fs, path, config);
 
         System.out.println("--> process bucket    : " + fn);
@@ -234,8 +232,8 @@ public class TSBucket {
         System.out.println("--> value-classname   : " + reader.getValueClassName());
 
         // TSBucket.setRecordMode( "page-id" );
-        TSBucket.setRecordMode( "counter" );
-        
+        TSBucket.setRecordMode("counter");
+
         boolean goOn = true;
         int i = 1;
         while (goOn && i <= LIMIT) {
@@ -295,52 +293,112 @@ public class TSBucket {
             }
 
             //System.out.println( code + "\t" + mr.getLabel() + "\t" + mr.xValues.size() + "\t" + mr.summeY() );
-
         }
         System.out.println("--> nr of records     : " + (i - 1));
     }
-    
-    Configuration config = null;
-    
-    public void setConfig( Configuration conf ) { 
-    	config = conf;
+
+    /**
+     * Reload a TSBucket from a Sequence-File and do an implicit processing, if
+     * the TSOperation object is not null.
+     *
+     * @param fn
+     * @param ids
+     *
+     * @throws IOException
+     */
+    public void loadFromSequenceFile(File f) throws IOException {
+
+        FileSystem fs = FileSystem.getLocal(config);
+        
+        System.out.println("--> LIMIT to local FileSystem ");
+        
+        Path path = new Path( f.getName() );
+
+        // read NamedVectors from a SequenceFile 
+        SequenceFile.Reader reader = new SequenceFile.Reader(fs, path, config);
+
+        System.out.println("--> process bucket    : " + f.getAbsolutePath());
+        System.out.println("--> compression-codes : " + reader.getCompressionCodec());
+        System.out.println("--> key-classename    : " + reader.getKeyClassName());
+        System.out.println("--> value-classname   : " + reader.getValueClassName());
+        System.out.println("--> LIMIT             : " + LIMIT);
+        System.out.println("--> IN MEM MODE       : " + inMEM);
+
+        boolean goOn = true;
+        int i = 1;
+        while (goOn && i <= LIMIT) {
+
+            Text key = new Text();
+
+            VectorWritable vec = new VectorWritable();
+            goOn = reader.next(key);
+
+            String tsKey = key.toString();
+
+            reader.getCurrentValue(vec);
+
+            Messreihe mr = new Messreihe();
+            mr.setDescription(i + " ) " + f.getName() + "_[" + key.toString() + "]");
+            mr.setLabel(i + " " + key.toString());
+
+            int c = 0;
+            NamedVector vector = (NamedVector) vec.get();
+            while (c < vector.size()) {
+                double value = vector.get(c);
+                mr.addValue(value);
+                c++;
+            }
+            i = i + 1;
+
+            if (inMEM) {
+                bucketData.add(mr);
+            }
+        }
+        System.out.println("--> nr of records     : " + (i - 1));
     }
-    
-    private Configuration initConfig() { 
-    	return config;
+
+    Configuration config = null;
+
+    public void setConfig(Configuration conf) {
+        config = conf;
+    }
+
+    private Configuration initConfig() {
+        if (config == null) {
+            config = new Configuration();
+        }
+        return config;
     }
 
     private FileSystem initFileSystem() throws IOException {
 
-    	FileSystem fs = null;
-    	try  {
-    		fs = FileSystem.get( new Configuration() );
-    		System.out.println( fs );
-    	}
-    	catch (Exception ex) {
-    		ex.printStackTrace();            
-    	}
-    	
-        return fs;
-	}
+        FileSystem fs = null;
+        try {
+            fs = FileSystem.get(initConfig());
+         
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	public java.util.Vector<Messreihe> getBucketData() {
+        return fs;
+    }
+
+    public java.util.Vector<Messreihe> getBucketData() {
         return bucketData;
     }
 
-    public static void resetCounter() { 
+    public static void resetCounter() {
         counter = 0;
     }
 
     public static int getRecordID(String t) {
 
-        if ( recoderIdMode.equals("counter") ) {
-                counter++;    
-                return counter;
-                
-        }
-        else { 
-            
+        if (recoderIdMode.equals("counter")) {
+            counter++;
+            return counter;
+
+        } else {
+
             if (t.length() > 0) {
 
                 int i1 = t.indexOf("PageID_");
@@ -353,11 +411,10 @@ public class TSBucket {
                 // System.out.append( b + " " + t );
                 return Integer.parseInt(b);
 
-            } 
-            else {
+            } else {
                 return 0;
             }
-            
+
         }
     }
 
@@ -372,7 +429,7 @@ public class TSBucket {
      * @throws Exception
      */
     @SuppressWarnings("deprecation")
-	public void createBucketWithRandomTS(String s, int z, int EXP, double BETA) throws IOException, Exception {
+    public void createBucketWithRandomTS(String s, int z, int EXP, double BETA) throws IOException, Exception {
 
         DecimalFormat df = new DecimalFormat("0.000");
 
@@ -380,7 +437,7 @@ public class TSBucket {
 
         FileSystem fs = initFileSystem();
 
-        Path path = new Path( s + "_LRC_beta_" + df.format(BETA) + ".tsb.vec.seq");
+        Path path = new Path(s + "_LRC_beta_" + df.format(BETA) + ".tsb.vec.seq");
         System.out.println("--> create bucket : (" + path.toString() + ") " + fs);
 
         // write a SequenceFile form a Vector
@@ -394,9 +451,11 @@ public class TSBucket {
             boolean showTESTS = true;
 
             Messreihe mr = LongTermCorrelationSeriesGenerator.getRandomRow((int) Math.pow(2, EXP), BETA, showTESTS, false);
-            if ( SAMPLES < TSPropertyTester.zSAMPLES) TSPropertyTester.addSample( mr );
+            if (SAMPLES < TSPropertyTester.zSAMPLES) {
+                TSPropertyTester.addSample(mr);
+            }
             SAMPLES++;
-                        
+
             TSData data = TSData.convertMessreihe(mr);
 
             System.out.println("(" + i + ")");
@@ -410,7 +469,6 @@ public class TSBucket {
         writer.close();
         System.out.println("### DONE : " + path.toString());
     }
-
 
     /**
      * Create Uncorrelated time series ...
@@ -429,7 +487,7 @@ public class TSBucket {
         Configuration config = initConfig();
         FileSystem fs = initFileSystem();
 
-        Path path = new Path( s + "_alpha_0.5_.tsb.vec.seq");
+        Path path = new Path(s + "_alpha_0.5_.tsb.vec.seq");
         System.out.println("--> create bucket : " + path.toString());
 
         // write a SequenceFile form a Vector
@@ -441,14 +499,16 @@ public class TSBucket {
         for (int i = 0; i < ANZ; i++) {
 
             TSData data = new TSData();
-            data.dataset = rescaleRandomData( data.getRandomData((int) Math.pow(2, EXP)) , 24.0 );
+            data.dataset = rescaleRandomData(data.getRandomData((int) Math.pow(2, EXP)), 24.0);
             Messreihe mr = data.getMessreihe();
-            if ( SAMPLES < TSPropertyTester.zSAMPLES) TSPropertyTester.addSample( mr );
+            if (SAMPLES < TSPropertyTester.zSAMPLES) {
+                TSPropertyTester.addSample(mr);
+            }
             SAMPLES++;
             /**
-             * 
+             *
              * Here we lose the METADATA of each row!!!
-             * 
+             *
              */
             System.out.print("  (" + i + ")");
             NamedVector nv = new NamedVector(new DenseVector(data.getData()), data.label);
@@ -461,28 +521,28 @@ public class TSBucket {
         writer.close();
         System.out.println("### DONE : " + path.toString());
     }
-    
+
     /**
      * a set of random numbers is multiplied by a factor
-     * 
+     *
      * @param randomData, factor
-     * 
-     * @return rescaled data 
+     *
+     * @return rescaled data
      */
     private double[] rescaleRandomData(double[] randomData, double factor) {
-       
+
         double sum = 0.0;
-        for( int i = 0; i < randomData.length; i++ ) { 
+        for (int i = 0; i < randomData.length; i++) {
             randomData[i] = randomData[i] * factor;
             sum = sum + randomData[i];
         }
-        System.out.println( sum + "\t" + sum/(double)randomData.length );
-        return randomData;        
+        System.out.println(sum + "\t" + sum / (double) randomData.length);
+        return randomData;
     }
 
     /**
      * Generate a sinus wave.
-     * 
+     *
      * @param s
      * @param ANZ
      * @param fMIN
@@ -503,7 +563,7 @@ public class TSBucket {
         Configuration config = initConfig();
         FileSystem fs = initFileSystem();
 
-        Path path = new Path( s + "_sinus_.tsb.vec.seq");
+        Path path = new Path(s + "_sinus_.tsb.vec.seq");
         System.out.println("--> create bucket : " + path.toString());
 
         // write a SequenceFile form a Vector
@@ -515,7 +575,7 @@ public class TSBucket {
 
             double fre = stdlib.StdRandom.uniform(fMIN, fMAX);
             double ampl = stdlib.StdRandom.uniform(aMIN, aMAX);
-        
+
             Messreihe mr = TSGenerator.getSinusWave(fre, time, SR, ampl);
             TSData data = TSData.convertMessreihe(mr);
 
@@ -530,6 +590,5 @@ public class TSBucket {
         writer.close();
         System.out.println("### DONE : " + path.toString());
     }
-
 
 }

@@ -257,7 +257,7 @@ public class MultiChartTwoAxis extends javax.swing.JDialog {
 
                 MesswertTabelle tab = new MesswertTabelle();
 
-                File f = new File( "data/out/FS_" + filename + ".dat" );
+                File f = new File( "/Volumes/MyExternalDrive/CALCULATIONS/data/out/FS_" + filename + ".dat" );
                 tab.setMessReihen( mrs );
 
                 tab.writeToFile( f );

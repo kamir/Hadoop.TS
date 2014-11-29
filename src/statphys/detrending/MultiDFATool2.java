@@ -224,7 +224,7 @@ public class MultiDFATool2 {
 
         initPuffer(zahlS);
 
-        String savePath = "./data/out/";
+        String savePath = "/Volumes/MyExternalDrive/CALCULATIONS/data/out/";
 
         double fit_min = 1.0, fit_max = 3.0;  // willkürliche Festlegung
         double alpha_cor_min = 0.0;  // zu klären was hier gemeint ist !!!

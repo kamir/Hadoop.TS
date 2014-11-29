@@ -28,7 +28,7 @@ public class RISAnalyse3 {
     static boolean storHTML = true;
 
     static String folderIN = "./data/in/agh/";
-    static String folderOUT = "./data/out/agh/";
+    static String folderOUT = "/Volumes/MyExternalDrive/CALCULATIONS/data/out/agh/";
 
     static boolean showCharts = true;
     static boolean showRAWData = false;

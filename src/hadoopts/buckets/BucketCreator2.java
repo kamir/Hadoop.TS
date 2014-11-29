@@ -1,4 +1,7 @@
-/*
+/**
+ * 
+ * TimeSeries buckets contain time series.
+
  *  An HDFS client to create a SequenceFile with :
  *
  *  Key   = LongWriteable

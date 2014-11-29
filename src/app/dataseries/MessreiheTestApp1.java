@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Mirko Kämpf
  */
-public class MessreiheTestApp {
+public class MessreiheTestApp1 {
 
     public static final String version =  "Version 1.0.0";
 

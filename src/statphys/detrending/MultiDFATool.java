@@ -92,7 +92,7 @@ public class MultiDFATool {
         zahlS = calcNrOf_s(lang, order);
         System.out.println("> Anzahl(s)     = " + zahlS );
 
-        String savePath = "./data/out/";
+        String savePath = "/Volumes/MyExternalDrive/CALCULATIONS/data/out/";
         
 
         double fit_min = 1, fit_max = 2;  // willkürliche Festlegung

@@ -217,7 +217,7 @@ public class SingleDFATool {
 
         _initPuffer(zahlS);
 
-        String savePath = "./data/out/";
+        String savePath = "/Volumes/MyExternalDrive/CALCULATIONS/data/out/";
         
 
         double fit_min[] = { 0.8, 1.5, 2.2 };

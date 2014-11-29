@@ -26,7 +26,7 @@ public class HaeufigkeitsZaehler {
     public String label = "HISTOGRAM";
 
     public Messreihe mr = new Messreihe();
-    public String folder = "./data/out/topic6/";
+    public String folder = "/Volumes/MyExternalDrive/CALCULATIONS/data/out/topic6/";
 
     public HaeufigkeitsZaehler( String lab ) { 
         label = lab;
