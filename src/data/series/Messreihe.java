@@ -2044,6 +2044,16 @@ public class Messreihe implements IMessreihe, Serializable {
         props.put( k , v );
         
     }
+    
+    
+    /**
+     * Cardinality as in Aris et al. (Aris2005) ...
+     * 
+     * @return 
+     */
+    public int getCardinality() {
+        return this.xValues.size();
+    }
  
     
 
